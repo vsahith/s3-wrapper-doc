@@ -194,7 +194,7 @@ Example:
 
 ```php
 
-$result = RandomHelper::pushToS3($key);
+$result = RandomHelper::deleteFromS3($key);
 // result is a boolean, if uploaded return true, else false
 
 ```
