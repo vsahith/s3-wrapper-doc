@@ -79,7 +79,7 @@ RandomHelper::mediaPreviewFromS3( array('key'=>'', 'bucket'=>'', 'icon'=>'', 'im
 
 
 ```
-In the above function `'key'` is manidatory parameter.
+In the above function `'key'` is mandatory parameter.
 
 
 ```php
