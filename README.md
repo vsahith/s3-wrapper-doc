@@ -1,6 +1,6 @@
 # S3 CRUD documentation
 
-##Terms:
+## Terms:
 
 >**S3**: Amazon S3 (Simple Storage Service) is a web service offered by Amazon Web Services that provides storage through web services interfaces (REST, SOAP etc)
 
@@ -10,7 +10,68 @@
 
 **presigned url:** It is a URL created by S3 that points to a file for a short period of time.
 
-## Uploading a file to S3:
+## PushTos3:
+
+To upload a file to S3
+
+It returns an array: array('ObjectURL'=>'', 'Key'=>'', 'Bucket'=>'')
+
+```php
+
+RandomHelper::pushToS3( array('key'=>'', 'deleteAfterUpload'=>'', 'ACL'=>'', 'tenant_id'=>'', 'folder_name'=>'', 'file_name'=>'', 'source_file_path'=>'') );
+
+```
+
+* `source_file_path`:
+> Path of file to be uploaded
+
+
+* `key`:
+> The s3 key og file
+
+example:
+```php
+
+$s3_links = RandomHelper::pushToS3( array('source_file_path'=>'/data/live/upload/123.doc', 'key'=>'2/docs/2124_doc.doc') );
+//store $s3_links in a databases
+
+```
+
+* `tenant_id`, `folder_name`, `file_name`:
+> Instead of passing a key, you can pass the above parameters and It creates key
+
+Example:
+```php
+
+$s3_links = RandomHelper::pushToS3( array('source_file_path'=>'/data/live/upload/123.doc', 'tenant_id'=>Yii::app()->user->getTenantId(), 'folder_name'=>'resumes', 'filename'=>'new_resume.doc') );
+//store $s3_links in a databases
+
+
+```
+
+* `deleteAfterUpload`:
+> By default after uploading the file to s3 it deletes it from local
+
+example:
+```php
+
+$s3_links = RandomHelper::pushToS3('source_file_path'=>'data/live/uplaod/2/sadasd.doc', 'key'=>'new/s3/key/filename.extension', 'deleteAfterUpload'=>False);
+
+```
+
+* `ACL`:
+> A S3 file can be public or private, by default all files are private, to make it public use `'ACL'=>'public-read'`
+
+Example:
+```php
+
+$s3_links = RandomHelper::pushToS3( array('source_file_path'=>'local/file/path', 'tenant_id'=>Yii::app()->user->getTenantId(), 'folder_name'=>'s3/folder/name'. 'file_name'=>'filename.extension', 'ACL'=>'public-read') );
+
+```
+
+##  Perview S3:
+
+To Display Preview button
 
 ```php
 
@@ -23,7 +84,7 @@ In the above function `'key'` is manidatory parameter.
 
 ```php
 
-RandomHelper::mediaPreviewFromS3($key)
+RandomHelper::mediaPreviewFromS3( array('key'=>$key) )
 
 
 ```
@@ -32,11 +93,6 @@ RandomHelper::mediaPreviewFromS3($key)
 > Used in creating a pre-signed URL
 
 default: `Yii::app()->params['s3_credentials']['bucket']`
-
-* `jsfunction`
-> Called when clicked on the preview link/icon/img
-
-default: `previewAttachmentS3(this)`
 
 * `icon`
 > Used to display an icon as a preview button
@@ -102,6 +158,8 @@ RandomHelper::mediaPreviewFromS3( array('key'=>$key, 'link'=>'pms/generatePrevie
 when preview button is clicked, a ajax request is sent to link, receives a presignedurl to display it using google viewer.
 
 * `return`
+> If passed as True, returns the result instead of echoing it.
+
 Type: 	 boolean
 Default: False
 
@@ -112,5 +170,31 @@ example:
 $preview_button = RandomHelper::mediaPreviewFromS3( array('key'=>$key, 'return'=>True) )
 
 //use $preview_button
+
+```
+
+## Download From S3:
+
+To Display Download Button
+
+```php
+
+RandomHelper::DownloadFromS3( array('key'=>'', 'bucket'=>'', 'icon'=>'', 'img'=>'', 'text'=>'', 'link'=>'', return=>'') );
+
+```
+
+All the parameters are same as the preview function with key being the mandatory parameter.
+However, It do not use jsfunction.
+
+## Delete From S3:
+
+To delete a file from S3
+
+Example:
+
+```php
+
+$result = RandomHelper::pushToS3($key);
+// result is a boolean, if uploaded return true, else false
 
 ```
